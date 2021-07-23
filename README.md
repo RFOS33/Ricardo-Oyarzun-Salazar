@@ -8,7 +8,7 @@ __Resumen de los datos originales (4 puntos).__
 Se tomaron datos productivos de peso, largo, factor de condición y parámetros fisiológicos de actividad enzimática de ATPAsas branquial (NKA), niveles de glucosa, calcio, cloro, albúmina y cortisol. Todas las variables mencionadas corresponden a variables respuestas, mientras que las variables predictoras o factores fueron condición (con IA y sin IA) y el factor tiempo que tiene alrededor de 18 niveles (18 fechas de muestreo) para las variables respuesta peso, largo y factor de condición, mientras que las demás variables respuestas (NKA, glucosa, calcio, cloro, albúmina, cortisol) tienen 15 niveles (15 fechas de muestreo). Todas las variables respuestas son variables cuantitativas continuas. 
 
 _Resumen de los métodos estadísticos utilizados (4 puntos)._
-Para evaluar si la IA genera un efecto en la fisiología de los peces se realizó un ANOVA de dos vías con interacción, donde las variables condición y fecha serán las variables predictoras y para el análisis se ocupo el paquete estadístico WRS2, el cual realiza análisis estadísticos robustos cuando no se pueden cumplir los supuestos de homocedasticidad y normalidad de los datos.   
+Para evaluar si la IA genera un efecto en la fisiología de los peces se realizó un ANOVA de dos vías con interacción, donde las variables condición y fecha serán las variables predictoras y para el análisis se ocupo el paquete estadístico WRS2, el cuál realiza análisis estadísticos robustos cuando no se pueden cumplir los supuestos de homocedasticidad y normalidad de los datos.   
 
 
 
