@@ -157,5 +157,35 @@ ggplot(a, aes(x = Fechas, y = Cortisol, color = Condición)) + geom_point(positi
 
 
 
+Grafico de correlaciones
+
+```{r}
+pairs.panels(a[3:11], stars = TRUE, main = "Grafica de correlaciones parámetros fisiológicos")
+```
+
+
+
+Análisis estadístico de los datos
+
+```{r}
+
+```
+
+
+Peso
+
+```{r}
+
+```
+
+
+
+
+
+
+
+
+
+
 
 
