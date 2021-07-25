@@ -22,97 +22,118 @@ library(readr)
 library(permuco)
 library(DescTools)
 library(ggplot2)
+install.packages("remotes")
+remotes::install_github("MattCowgill/ggannotate")
 library(ggannotate)
 ```
 
 
-__Resumen del problema a resolver (4 puntos).__
+__Planteamiento del problema a resolver (4 puntos).__
 La inteligencia artificial (IA) cada vez esta abarcando más areas que ayudan al bienestar de las personas. En este contexto, las industrias acuícolas están comenzando a utilizar esta tecnología pero aún su uso es muy incipiente y no se sabe con certeza si la IA puede de manera efectiva mejorar los parámetros productivos de peces en cultivo y ser una tecnología viable en el futuro. Debido a esta problemática se ha decidido realizar un experimento utilizando IA en el fotoperiodo de la especie Salmón del Atlantico Salmo salar mantenidos en agua dulce y agua de mar con el objetivo de evaluar si la IA mejora o modifica algunos parámetros productivos de la acuicultura de Salmo salar y si existen diferencias con respecto a su fisiología en comparación al sistema tradicionl de cultivo (luces sin inteligencia artificial).
 
-__Resumen de los datos originales (4 puntos).__
-Se tomaron datos productivos de peso, largo, factor de condición y parámetros fisiológicos de actividad enzimática de ATPAsas branquial (NKA), niveles de glucosa, calcio, cloro, albúmina y cortisol. Todas las variables mencionadas corresponden a variables respuestas, mientras que las variables predictoras o factores fueron condición (con IA y sin IA) y el factor tiempo que tiene alrededor de 18 niveles (18 fechas de muestreo) para las variables respuesta peso, largo y factor de condición, mientras que las demás variables respuestas (NKA, glucosa, calcio, cloro, albúmina, cortisol) tienen 15 niveles (15 fechas de muestreo). Todas las variables respuestas son variables cuantitativas continuas. De la fecha inicial (24-09-2020) hasta la fecha 12-02-2021 los peces fueron mantenidos en agua dulce, mientras que desde las fechas 26-02-2021 hasta el 25-05-2021 los peces fueron mantenidos en agua de mar. Una flecha en las gáficas indica cuando los peces fueron trasladados al agua de mar.   
-
-_Resumen de los métodos estadísticos utilizados (4 puntos)._
-Para evaluar si la IA genera un efecto en la fisiología de los peces se realizo un ANOVA de dos vías con interacción, donde las variables condición y fecha serán las variables predictoras y para el análisis se ocupo el paquete estadístico WRS2, el cual realiza analisis estadísticos robustos cuando no se pueden cumplir los supuestos de homocedasticidad y normalidad de los datos.   
+__Descripción detallada de los datos originales (4 puntos).__
+Se tomaron datos productivos de peso, largo, factor de condición (K) y parámetros fisiológicos de actividad enzimática de ATPAsas branquial (NKA), niveles de glucosa, calcio, cloro, albúmina y cortisol. Todas las variables mencionadas corresponden a variables respuestas, mientras que las variables predictoras o factores fueron condición (con IA y sin IA) y el factor tiempo que tiene alrededor de 18 niveles (18 fechas de muestreo) para las variables respuesta peso, largo y factor de condición, mientras que las demás variables respuestas (NKA, glucosa, calcio, cloro, albúmina, cortisol) tienen 15 niveles (15 fechas de muestreo). Todas las variables respuestas son variables cuantitativas continuas. De la fecha inicial (24-09-2020) hasta la fecha 12-02-2021 los peces fueron mantenidos en agua dulce, mientras que desde las fechas 26-02-2021 hasta el 25-05-2021 los peces fueron mantenidos en agua de mar. Una flecha en las gáficas indica cuando los peces fueron trasladados al agua de mar.  
 
 
+__Análisis exploratorio de los datos__
 
-Importación de datos
+Importación de datos productivos
 
 ```{r}
-a <- read_excel("Datos_Luxmeter_Diplomado.xlsx")
+a <- read_excel("datos_productivos_luxmeter.xlsx")
 a$Fechas <- as.factor(a$Fechas)
 a$Condición <- as.factor(a$Condición)
-a$NKA <- as.numeric(a$NKA)
-a$Glucosa <- as.numeric(a$Glucosa)
-a$Calcio <- as.numeric(a$Calcio)
-a$Cloro <- as.numeric(a$Cloro)
-a$Albumina <- as.numeric(a$Albumina)
-a$Cortisol <- as.numeric(a$Cortisol)
 str(a)
 summary(a)
 ```
 
 
-Eliminación de datos faltantes (NAs)
+
+Importación de parámetros plasmáticos
+
 
 ```{r}
-a <- na.omit(a)
-summary(a)
+b <- read_excel("parametros_plasmaticos_luxmeter.xlsx")
+b$Fechas <- as.factor(b$Fechas)
+b$Condicion <- as.factor(b$Condicion)
+b$Cortisol <- as.numeric(b$Cortisol)
+str(b)
+summary(b)
 ```
+
+
+Importación de datos para correlaciones
+
+```{r}
+c <- read_excel("Datos_correlaciones_luxmeter.xlsx")
+c$Fechas <- as.factor(c$Fechas)
+c$Condición <- as.factor(c$Condición)
+c$Glucosa <- as.numeric(c$Glucosa)
+c$Calcio <- as.numeric(c$Calcio)
+c$Cloro <- as.numeric(c$Cloro)
+c$Albumina <- as.numeric(c$Albumina)
+c$Cortisol <- as.numeric(c$Cortisol)
+str(c)
+```
+
 
 Análisis exploratorio de datos
 
 Peso
 
 ```{r}
-ab <- ggplot(a, aes(x = Fechas, y = Peso, color = Condición)) + geom_boxplot() + labs( x = "Fechas de muestreo", y = "Peso (gr)") + theme(axis.text.x = element_text(angle = 20), legend.position = c(0.1,0.8)) + stat_summary(fun.y = mean, shape = 22, position = position_dodge(width = 0.75))
-ab
+boxplot_peso <- ggplot(a, aes(x = Fechas, y = Peso, color = Condición)) + geom_boxplot() + labs( x = "Fechas de muestreo", y = "Peso (gr)") + theme(axis.text.x = element_text(angle = 20), legend.position = c(0.1,0.8)) + stat_summary(fun = mean, shape = 22, position = position_dodge(width = 0.75)) + geom_text(data = data.frame(x = c(11.421281756838, 11.421281756838), y = c(252.79800199825, 252.79800199825), label = c("", "↓")), mapping = aes(x = x, y = y, label = label), size = 10.58, inherit.aes = FALSE)
+boxplot_peso
 
-ggplot(a, aes(x = Fechas, y = Peso, color = Condición)) + geom_point(position = position_jitterdodge(jitter.width = 0.3, dodge.width = 0.3)) + labs( x = "Fechas de muestreo", y = "Peso (gr)") + theme(axis.text.x = element_text(angle = 20), legend.position = c(0.1,0.8))
+geompoint_peso <- ggplot(a, aes(x = Fechas, y = Peso, color = Condición)) + geom_point(position = position_jitterdodge(jitter.width = 0.3, dodge.width = 0.3)) + labs( x = "Fechas de muestreo", y = "Peso (gr)") + theme(axis.text.x = element_text(angle = 20), legend.position = c(0.1,0.8)) + geom_text(data = data.frame(x = 11.4929019465336, y = 370.423497046294, label = "↓"), mapping = aes(x = x, y = y, label = label), size = 10.58, inherit.aes = FALSE)
+geompoint_peso
 ```
 
 
-
-```{r}
-ggannotate(ab)
-```
 
 
 
 Largo
 
 ```{r}
-ggplot(a, aes(x = Fechas, y = Largo, color = Condición)) + geom_boxplot() + labs( x = "Fechas de muestreo", y = "Largo (cm)") + theme(axis.text.x = element_text(angle = 20), legend.position = c(0.1,0.8)) + stat_summary(fun.y = mean, shape = 22, position = position_dodge(width = 0.75))
+boxplot_largo <- ggplot(a, aes(x = Fechas, y = Largo, color = Condición)) + geom_boxplot() + labs( x = "Fechas de muestreo", y = "Largo (cm)") + theme(axis.text.x = element_text(angle = 20), legend.position = c(0.1,0.8)) + stat_summary(fun = mean, shape = 22, position = position_dodge(width = 0.75)) + geom_text(data = data.frame(x = 11.452862434858, y = 30.2220318334214, label = "↓"), mapping = aes(x = x, y = y, label = label), size = 10.58, inherit.aes = FALSE)
+boxplot_largo
 
-ggplot(a, aes(x = Fechas, y = Largo, color = Condición)) + geom_point(position = position_jitterdodge(jitter.width = 0.3, dodge.width = 0.3)) + labs( x = "Fechas de muestreo", y = "Largo (cm)") + theme(axis.text.x = element_text(angle = 20), legend.position = c(0.1,0.8))
+geompoint_largo <- ggplot(a, aes(x = Fechas, y = Largo, color = Condición)) + geom_point(position = position_jitterdodge(jitter.width = 0.3, dodge.width = 0.3)) + labs( x = "Fechas de muestreo", y = "Largo (cm)") + theme(axis.text.x = element_text(angle = 20), legend.position = c(0.1,0.8)) + geom_text(data = data.frame(x = 11.4291694615725, y = 31.0850767676125, label = "↓"), mapping = aes(x = x, y = y, label = label), size = 10.58, inherit.aes = FALSE)
+geompoint_largo
 ```
 
 
 Factor de condición (K)
 
 ```{r}
-ggplot(a, aes(x = Fechas, y = K, color = Condición)) + geom_boxplot() + labs( x = "Fechas de muestreo", y = "Factor de condición (K)") + theme(axis.text.x = element_text(angle = 20), legend.position = c(0.2,0.2)) + stat_summary(fun.y = mean, shape = 22, position = position_dodge(width = 0.75))
+boxplot_K <- ggplot(a, aes(x = Fechas, y = K, color = Condición)) + geom_boxplot() + labs( x = "Fechas de muestreo", y = "Factor de condición (K)") + theme(axis.text.x = element_text(angle = 20), legend.position = c(0.2,0.2)) + stat_summary(fun = mean, shape = 22, position = position_dodge(width = 0.75)) + geom_text(data = data.frame(x = 11.4292750046114, y = 1.38809936254499, label = "↓"), mapping = aes(x = x, y = y, label = label), size = 10.58, inherit.aes = FALSE)
+boxplot_K
 
-ggplot(a, aes(x = Fechas, y = K, color = Condición)) + geom_point(position = position_jitterdodge(jitter.width = 0.3, dodge.width = 0.3)) + labs( x = "Fechas de muestreo", y = "Factor de condición (K)") + theme(axis.text.x = element_text(angle = 20), legend.position = c(0.2,0.2))
+geompoint_K <- ggplot(a, aes(x = Fechas, y = K, color = Condición)) + geom_point(position = position_jitterdodge(jitter.width = 0.3, dodge.width = 0.3)) + labs( x = "Fechas de muestreo", y = "Factor de condición (K)") + theme(axis.text.x = element_text(angle = 20), legend.position = c(0.2,0.2)) + geom_text(data = data.frame(x = 11.4772042897979, y = 1.42333122295923, label = "↓"), mapping = aes(x = x, y = y, label = label), size = 10.58, inherit.aes = FALSE)
+geompoint_K
 ```
 
 
 NKA
 
 ```{r}
-ggplot(a, aes(x = Fechas, y = NKA, color = Condición)) + geom_boxplot() + labs( x = "Fechas de muestreo", y = "Actividad enzimática NKA (umoles ADP/mg proteina/hora)") + theme(axis.text.x = element_text(angle = 20), legend.position = c(0.1,0.8)) + stat_summary(fun.y = mean, shape = 22, position = position_dodge(width = 0.75))
+boxplot_NKA <- ggplot(a, aes(x = Fechas, y = NKA, color = Condición)) + geom_boxplot() + labs( x = "Fechas de muestreo", y = "Actividad enzimática NKA (umoles ADP/mg proteina/hora)") + theme(axis.text.x = element_text(angle = 20), legend.position = c(0.1,0.8)) + stat_summary(fun = mean, shape = 22, position = position_dodge(width = 0.75)) + geom_text(data = data.frame(x = 11.4772042897979, y = 16.5883528852713, label = "↓"), mapping = aes(x = x, y = y, label = label), size = 10.58, inherit.aes = FALSE)
+boxplot_NKA
 
-ggplot(a, aes(x = Fechas, y = NKA, color = Condición)) + geom_point(position = position_jitterdodge(jitter.width = 0.3, dodge.width = 0.3)) + labs( x = "Fechas de muestreo", y = "Actividad enzimática NKA (umoles ADP/mg proteina/hora)") + theme(axis.text.x = element_text(angle = 20), legend.position = c(0.1,0.8))
+geompoint_NKA <- ggplot(a, aes(x = Fechas, y = NKA, color = Condición)) + geom_point(position = position_jitterdodge(jitter.width = 0.3, dodge.width = 0.3)) + labs( x = "Fechas de muestreo", y = "Actividad enzimática NKA (umoles ADP/mg proteina/hora)") + theme(axis.text.x = element_text(angle = 20), legend.position = c(0.1,0.8)) + geom_text(data = data.frame(x = 11.5011689323912, y = 17.2186957365544, label = "↓"), mapping = aes(x = x, y = y, label = label), size = 10.58, inherit.aes = FALSE)
+geompoint_NKA
 ```
 
 
 Glucosa
 
 ```{r}
-ggplot(a, aes(x = Fechas, y = Glucosa, color = Condición)) + geom_boxplot() + labs( x = "Fechas de muestreo", y = " Glucosa (mmol/L)") + theme(axis.text.x = element_text(angle = 20), legend.position = c(0.8,0.8)) + stat_summary(fun.y = mean, shape = 22, position = position_dodge(width = 0.75))
+boxplot_glucosa <- ggplot(b, aes(x = Fechas, y = Glucosa, color = Condicion)) + geom_boxplot() + labs( x = "Fechas de muestreo", y = " Glucosa (mmol/L)") + theme(axis.text.x = element_text(angle = 20), legend.position = c(0.8,0.8)) + stat_summary(fun = mean, shape = 22, position = position_dodge(width = 0.75)) + geom_text(data = data.frame(x = 11.5002483814291, y = 12.9004219851579, label = "↓"), mapping = aes(x = x, y = y, label = label), size = 10.58, inherit.aes = FALSE)
+boxplot_glucosa
 
-ggplot(a, aes(x = Fechas, y = Glucosa, color = Condición)) + geom_point(position = position_jitterdodge(jitter.width = 0.3, dodge.width = 0.3)) + labs( x = "Fechas de muestreo", y = "Glucosa (mmol/L)") + theme(axis.text.x = element_text(angle = 20), legend.position = c(0.8,0.8))
+geompoint_glucosa <- ggplot(b, aes(x = Fechas, y = Glucosa, color = Condicion)) + geom_point(position = position_jitterdodge(jitter.width = 0.3, dodge.width = 0.3)) + labs( x = "Fechas de muestreo", y = "Glucosa (mmol/L)") + theme(axis.text.x = element_text(angle = 20), legend.position = c(0.8,0.8)) + geom_text(data = data.frame(x = 11.452862434858, y = 14.5080165430836, label = "↓"), mapping = aes(x = x, y = y, label = label), size = 10.58, inherit.aes = FALSE)
+geompoint_glucosa
 ```
 
 
@@ -120,9 +141,11 @@ ggplot(a, aes(x = Fechas, y = Glucosa, color = Condición)) + geom_point(positio
 Calcio
 
 ```{r}
-ggplot(a, aes(x = Fechas, y = Calcio, color = Condición)) + geom_boxplot() + labs( x = "Fechas de muestreo", y = "Calcio (mmol/L)") + theme(axis.text.x = element_text(angle = 20), legend.position = c(0.1,0.8)) + stat_summary(fun.y = mean, shape = 22, position = position_dodge(width = 0.75))
+boxplot_calcio <- ggplot(b, aes(x = Fechas, y = Calcio, color = Condicion)) + geom_boxplot() + labs( x = "Fechas de muestreo", y = "Calcio (mmol/L)") + theme(axis.text.x = element_text(angle = 20), legend.position = c(0.1,0.8)) + stat_summary(fun.y = mean, shape = 22, position = position_dodge(width = 0.75)) + geom_text(data = data.frame(x = 11.4839693511605, y = 5.84235851318247, label = "↓"), mapping = aes(x = x, y = y, label = label), size = 10.58, inherit.aes = FALSE)
+boxplot_calcio
 
-ggplot(a, aes(x = Fechas, y = Calcio, color = Condición)) + geom_point(position = position_jitterdodge(jitter.width = 0.3, dodge.width = 0.3)) + labs( x = "Fechas de muestreo", y = "Calcio (mmol/L)") + theme(axis.text.x = element_text(angle = 20), legend.position = c(0.1,0.8))
+geompoint_calcio <- ggplot(b, aes(x = Fechas, y = Calcio, color = Condicion)) + geom_point(position = position_jitterdodge(jitter.width = 0.3, dodge.width = 0.3)) + labs( x = "Fechas de muestreo", y = "Calcio (mmol/L)") + theme(axis.text.x = element_text(angle = 20), legend.position = c(0.1,0.8)) + geom_text(data = data.frame(x = 11.5074846078101, y = 6.06622963058537, label = "↓"), mapping = aes(x = x, y = y, label = label), size = 10.58, inherit.aes = FALSE)
+geompoint_calcio
 ```
 
 
@@ -131,18 +154,24 @@ ggplot(a, aes(x = Fechas, y = Calcio, color = Condición)) + geom_point(position
 Cloro
 
 ```{r}
-ggplot(a, aes(x = Fechas, y = Cloro, color = Condición)) + geom_boxplot() + labs( x = "Fechas de muestreo", y = "Cloro (mmol/L)") + theme(axis.text.x = element_text(angle = 20), legend.position = c(0.1,0.8)) + stat_summary(fun.y = mean, shape = 22, position = position_dodge(width = 0.75))
+boxplot_cloro <- ggplot(b, aes(x = Fechas, y = Cloro, color = Condicion)) + geom_boxplot() + labs( x = "Fechas de muestreo", y = "Cloro (mmol/L)") + theme(axis.text.x = element_text(angle = 20), legend.position = c(0.1,0.8)) + stat_summary(fun = mean, shape = 22, position = position_dodge(width = 0.75)) + geom_text(data = data.frame(x = 11.3257881705773, y = 258.718841483435, label = "↓"), mapping = aes(x = x, y = y, label = label), size = 10.58, inherit.aes = FALSE)
+boxplot_cloro
 
-ggplot(a, aes(x = Fechas, y = Cloro, color = Condición)) + geom_point(position = position_jitterdodge(jitter.width = 0.3, dodge.width = 0.3)) + labs( x = "Fechas de muestreo", y = "Cloro (mmol/L)") + theme(axis.text.x = element_text(angle = 20), legend.position = c(0.1,0.8))
+geompoint_cloro <- ggplot(b, aes(x = Fechas, y = Cloro, color = Condicion)) + geom_point(position = position_jitterdodge(jitter.width = 0.3, dodge.width = 0.3)) + labs( x = "Fechas de muestreo", y = "Cloro (mmol/L)") + theme(axis.text.x = element_text(angle = 20), legend.position = c(0.1,0.8)) + geom_text(data = data.frame(x = 11.3019147740121, y = 263.0765260268, 
+    label = "↓"), mapping = aes(x = x, y = y, label = label), 
+    size = 10.58, inherit.aes = FALSE)
+geompoint_cloro
 ```
 
 
 Albúmina
 
 ```{r}
-ggplot(a, aes(x = Fechas, y = Albumina, color = Condición)) + geom_boxplot() + labs( x = "Fechas de muestreo", y = "Albumina (mmol/L)") + theme(axis.text.x = element_text(angle = 20), legend.position = c(0.1,0.8)) + stat_summary(fun.y = mean, shape = 22, position = position_dodge(width = 0.75))
+boxplot_albumina <- ggplot(b, aes(x = Fechas, y = Albumina, color = Condicion)) + geom_boxplot() + labs( x = "Fechas de muestreo", y = "Albumina (mmol/L)") + theme(axis.text.x = element_text(angle = 20), legend.position = c(0.1,0.8)) + stat_summary(fun = mean, shape = 22, position = position_dodge(width = 0.75)) + geom_text(data = data.frame(x = 11.4133491471997, y = 1.51119983533728, label = "↓"), mapping = aes(x = x, y = y, label = label), size = 10.58, inherit.aes = FALSE)
+boxplot_albumina
 
-ggplot(a, aes(x = Fechas, y = Albumina, color = Condición)) + geom_point(position = position_jitterdodge(jitter.width = 0.3, dodge.width = 0.3)) + labs( x = "Fechas de muestreo", y = "Albumina (mmol/L)") + theme(axis.text.x = element_text(angle = 20), legend.position = c(0.1,0.8))
+geompoint_albumina <- ggplot(b, aes(x = Fechas, y = Albumina, color = Condicion)) + geom_point(position = position_jitterdodge(jitter.width = 0.3, dodge.width = 0.3)) + labs( x = "Fechas de muestreo", y = "Albumina (mmol/L)") + theme(axis.text.x = element_text(angle = 20), legend.position = c(0.1,0.8)) + geom_text(data = data.frame(x = 11.4371319899446, y = 1.50921177416825, label = "↓"), mapping = aes(x = x, y = y, label = label), size = 10.58, inherit.aes = FALSE)
+geompoint_albumina
 ```
 
 
@@ -150,9 +179,11 @@ ggplot(a, aes(x = Fechas, y = Albumina, color = Condición)) + geom_point(positi
 Cortisol
 
 ```{r}
-ggplot(a, aes(x = Fechas, y = Cortisol, color = Condición)) + geom_boxplot() + labs( x = "Fechas de muestreo", y = "Cortisol (ng/mL)") + theme(axis.text.x = element_text(angle = 20), legend.position = c(0.1,0.8)) + stat_summary(fun.y = mean, shape = 22, position = position_dodge(width = 0.75))
+boxplot_cortisol <- ggplot(b, aes(x = Fechas, y = Cortisol, color = Condicion)) + geom_boxplot() + labs( x = "Fechas de muestreo", y = "Cortisol (ng/mL)") + theme(axis.text.x = element_text(angle = 20), legend.position = c(0.1,0.8)) + stat_summary(fun = mean, shape = 22, position = position_dodge(width = 0.75))
+ggannotate(boxplot_cortisol)
 
-ggplot(a, aes(x = Fechas, y = Cortisol, color = Condición)) + geom_point(position = position_jitterdodge(jitter.width = 0.3, dodge.width = 0.3)) + labs( x = "Fechas de muestreo", y = "Cortisol (ng/mL)") + theme(axis.text.x = element_text(angle = 20), legend.position = c(0.1,0.8))
+geompoint_cortisol <- ggplot(b, aes(x = Fechas, y = Cortisol, color = Condicion)) + geom_point(position = position_jitterdodge(jitter.width = 0.3, dodge.width = 0.3)) + labs( x = "Fechas de muestreo", y = "Cortisol (ng/mL)") + theme(axis.text.x = element_text(angle = 20), legend.position = c(0.1,0.8))
+geompoint_cortisol
 ```
 
 
@@ -160,15 +191,22 @@ ggplot(a, aes(x = Fechas, y = Cortisol, color = Condición)) + geom_point(positi
 Grafico de correlaciones
 
 ```{r}
-pairs.panels(a[3:11], stars = TRUE, main = "Grafica de correlaciones parámetros fisiológicos")
+pairs.panels(c[3:11], stars = TRUE, main = "Grafica de correlaciones parámetros fisiológicos")
 ```
 
 
 
-Análisis estadístico de los datos
+__Análisis estadístico de los datos__
+
+Peso
 
 ```{r}
+t2way(Peso ~ Condición * Fechas, data = a)
 
+#anovaglucosa <- aov(Glucosa ~ Condicion * Fechas, data = a)
+#TukeyHSD(anovaglucosa)
+#anova(anovaglucosa)
+#mcp2a(Glucosa ~ Condicion * Fechas, data = a, est = "median")
 ```
 
 
@@ -184,7 +222,9 @@ Peso
 
 
 
+__Interpretación de resultados y conclusión__
 
+Para evaluar si la IA genera un efecto en la fisiología de los peces se realizo un ANOVA de dos vías con interacción, donde las variables condición y fecha serán las variables predictoras y para el análisis se ocupo el paquete estadístico WRS2, el cual realiza analisis estadísticos robustos cuando no se pueden cumplir los supuestos de homocedasticidad y normalidad de los datos.
 
 
 
