@@ -179,10 +179,12 @@ geompoint_albumina
 Cortisol
 
 ```{r}
-boxplot_cortisol <- ggplot(b, aes(x = Fechas, y = Cortisol, color = Condicion)) + geom_boxplot() + labs( x = "Fechas de muestreo", y = "Cortisol (ng/mL)") + theme(axis.text.x = element_text(angle = 20), legend.position = c(0.1,0.8)) + stat_summary(fun = mean, shape = 22, position = position_dodge(width = 0.75))
-ggannotate(boxplot_cortisol)
+boxplot_cortisol <- ggplot(b, aes(x = Fechas, y = Cortisol, color = Condicion)) + geom_boxplot() + labs( x = "Fechas de muestreo", y = "Cortisol (ng/mL)") + theme(axis.text.x = element_text(angle = 20), legend.position = c(0.1,0.8)) + stat_summary(fun = mean, shape = 22, position = position_dodge(width = 0.75)) + geom_text(data = data.frame(x = 11.421281756838, y = 776.576160875106, label = "↓"), mapping = aes(x = x, y = y, label = label), size = 10.58, inherit.aes = FALSE)
+boxplot_cortisol
 
-geompoint_cortisol <- ggplot(b, aes(x = Fechas, y = Cortisol, color = Condicion)) + geom_point(position = position_jitterdodge(jitter.width = 0.3, dodge.width = 0.3)) + labs( x = "Fechas de muestreo", y = "Cortisol (ng/mL)") + theme(axis.text.x = element_text(angle = 20), legend.position = c(0.1,0.8))
+geompoint_cortisol <- ggplot(b, aes(x = Fechas, y = Cortisol, color = Condicion)) + geom_point(position = position_jitterdodge(jitter.width = 0.3, dodge.width = 0.3)) + labs( x = "Fechas de muestreo", y = "Cortisol (ng/mL)") + theme(axis.text.x = element_text(angle = 20), legend.position = c(0.1,0.8)) + geom_text(data = data.frame(x = 11.3735349637076, y = 794.912470978678, 
+    label = "↓"), mapping = aes(x = x, y = y, label = label), 
+    size = 10.58, inherit.aes = FALSE)
 geompoint_cortisol
 ```
 
