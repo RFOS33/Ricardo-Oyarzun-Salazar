@@ -273,23 +273,89 @@ Efecto de la IA sobre el Peso
 
 ```{r}
 t2way(Peso ~ Condición + Fechas + Condición:Fechas, data = a,)
-mcp2a(Peso ~ Condición + Fechas + Condición:Fechas, data = a, est = "median")
-
 anovapeso <- aov(Peso ~ Condición + Fechas + Condición:Fechas, data = a)
 anova(anovapeso)
 TukeyHSD(anovapeso)
-
 ```
 
-largo
+Efecto de la IA sobre el largo
 
 ```{r}
-
+t2way(Largo ~ Condición + Fechas + Condición:Fechas, data = a,)
+anovalargo <- aov(Largo ~ Condición + Fechas + Condición:Fechas, data = a)
+anova(anovalargo)
+TukeyHSD(anovalargo)
 ```
 
 
+Efecto de la IA sobre el factor de condición
+
+```{r}
+t2way(K ~ Condición + Fechas + Condición:Fechas, data = a,)
+anovak <- aov(K ~ Condición + Fechas + Condición:Fechas, data = a)
+anova(anovak)
+TukeyHSD(anovak)
+```
 
 
+Efecto de la IA sobre la actividad enzimática de NKA
+
+```{r}
+t2way(NKA ~ Condición + Fechas + Condición:Fechas, data = a2,)
+anovanka <- aov(NKA ~ Condición + Fechas + Condición:Fechas, data = a2)
+anova(anovanka)
+TukeyHSD(anovanka)
+```
+
+
+Efecto de la IA sobre los niveles de glucosa plasmática
+
+```{r}
+t2way(Glucosa ~ Condicion + Fechas + Condicion:Fechas, data = b,)
+anovaglucosa <- aov(Glucosa ~ Condicion + Fechas + Condicion:Fechas, data = b)
+anova(anovaglucosa)
+TukeyHSD(anovaglucosa)
+```
+
+
+Efecto de la IA sobre los niveles de calcio plasmáticos
+
+```{r}
+t2way(Calcio ~ Condicion + Fechas + Condicion:Fechas, data = b,)
+anovacalcio <- aov(Calcio ~ Condicion + Fechas + Condicion:Fechas, data = b)
+anova(anovacalcio)
+TukeyHSD(anovacalcio)
+```
+
+
+Efecto de la IA sobre los niveles de cloro plasmático
+
+```{r}
+t2way(Cloro ~ Condicion + Fechas + Condicion:Fechas, data = b,)
+anovacloro <- aov(Cloro ~ Condicion + Fechas + Condicion:Fechas, data = b)
+anova(anovacloro)
+TukeyHSD(anovacloro)
+```
+
+
+Efecto de la IA sobre los niveles de albumina plasmática
+
+```{r}
+t2way(Albumina ~ Condicion + Fechas + Condicion:Fechas, data = b,)
+anovaalbumina <- aov(Albumina ~ Condicion + Fechas + Condicion:Fechas, data = b)
+anova(anovaalbumina)
+TukeyHSD(anovaalbumina)
+```
+
+
+Efecto de la IA sobre los niveles de cortisol plasmático
+
+```{r}
+t2way(Cortisol ~ Condicion + Fechas + Condicion:Fechas, data = b,)
+anovacortisol <- aov(Cortisol ~ Condicion + Fechas + Condicion:Fechas, data = b)
+anova(anovacortisol)
+TukeyHSD(anovacortisol)
+```
 
 
 
