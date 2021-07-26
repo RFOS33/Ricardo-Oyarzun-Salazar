@@ -361,7 +361,7 @@ TukeyHSD(anovacortisol)
 
 __Interpretación de resultados y conclusión__
 
-Para evaluar si la IA genera un efecto en la fisiología de los peces se realizo un ANOVA de dos vías con interacción, donde las variables condición y fecha serán las variables predictoras y para el análisis se ocupo el paquete estadístico WRS2, el cual realiza analisis estadísticos robustos cuando no se pueden cumplir los supuestos de homocedasticidad y normalidad de los datos. Al evaluar 
+Para evaluar si la IA genera un efecto en la fisiología de los peces se realizo un ANOVA de dos vías con interacción, donde las variables condición y fecha serán las variables predictoras y para el análisis se ocupo el paquete estadístico WRS2, el cual realiza analisis estadísticos robustos cuando no se pueden cumplir los supuestos de homocedasticidad y es robusto a la presencia de outlier. Al realizar la visualización de los dato se puede apreciar el incremento en la varianza de los datos, sugiriendo heterocedasticidad, lo cual fue confirmado con los test de levene (p < 0.05), por lo tanto realizamos anova de dos vías utilizando el paquete WRS2 y además realizamos el anova de dos vías tradicional para ir comparando ambas pruebas estadísticas. Para nuestra sorpresa el anova tradicional a pesar de no cumplir los supuestos, de todas formas fue capaz de detectar efectos significativos de los factores predictivos e incluso fue mucho más sensible en identificar diferencias significativas 
 
 
 
