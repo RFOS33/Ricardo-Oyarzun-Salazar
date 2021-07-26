@@ -36,31 +36,6 @@ La inteligencia artificial (IA) cada vez esta abarcando más areas que ayudan al
 __Descripción detallada de los datos originales (4 puntos).__
 Se tomaron datos productivos de peso, largo, factor de condición (K) y parámetros fisiológicos de actividad enzimática de ATPAsas branquial (NKA), niveles de glucosa, calcio, cloro, albúmina y cortisol. Todas las variables mencionadas corresponden a variables respuestas, mientras que las variables predictoras o factores fueron condición (con IA y sin IA) y el factor tiempo que tiene alrededor de 18 niveles (18 fechas de muestreo) para las variables respuesta peso, largo y factor de condición, mientras que las demás variables respuestas (NKA, glucosa, calcio, cloro, albúmina, cortisol) tienen 15 niveles (15 fechas de muestreo). Todas las variables respuestas son variables cuantitativas continuas. De la fecha inicial (24-09-2020) hasta la fecha 12-02-2021 los peces fueron mantenidos en agua dulce, mientras que desde las fechas 26-02-2021 hasta el 25-05-2021 los peces fueron mantenidos en agua de mar. Una flecha en las gáficas indica cuando los peces fueron trasladados al agua de mar.  
 
-Resumen de los datos productivos
-
-```{r}
-resumen_datosa <- summary(a)
-pander::pander(resumen_datosa, caption = "Resumen parámetros productivos")
-```
-
-
-
-Resumen de la actividad enzimática NKA
-
-```{r}
-resumen_datosa2 <- summary(a2)
-pander::pander(resumen_datosa2, caption = "Resumen actividad enzimática NKA branquial")
-```
-
-
-Resumen de la actividad enzimática NKA
-
-```{r}
-resumen_datosb <- summary(b)
-pander::pander(resumen_datosb, caption = "Resumen parámetros plasmáticos")
-```
-
-
 
 __Análisis exploratorio de los datos__
 
@@ -103,6 +78,31 @@ c$Cloro <- as.numeric(c$Cloro)
 c$Albumina <- as.numeric(c$Albumina)
 c$Cortisol <- as.numeric(c$Cortisol)
 str(c)
+```
+
+
+Resumen de los datos productivos
+
+```{r}
+resumen_datosa <- summary(a)
+pander::pander(resumen_datosa, caption = "Resumen parámetros productivos")
+```
+
+
+
+Resumen de la actividad enzimática NKA
+
+```{r}
+resumen_datosa2 <- summary(a2)
+pander::pander(resumen_datosa2, caption = "Resumen actividad enzimática NKA branquial")
+```
+
+
+Resumen de la actividad enzimática NKA
+
+```{r}
+resumen_datosb <- summary(b)
+pander::pander(resumen_datosb, caption = "Resumen parámetros plasmáticos")
 ```
 
 
@@ -229,68 +229,6 @@ pairs.panels(c[3:11], stars = TRUE, main = "Grafica de correlaciones parámetros
 
 __Análisis estadístico de los datos__
 
-Supuestos estadísticos
-
-Homocedasticidad para datos productivos
-
-```{r}
-leveneTest(Peso ~ Condición*Fechas, data = a, center = "median")
-leveneTest(Largo ~ Condición*Fechas, data = a, center = "median")
-leveneTest(K ~ Condición*Fechas, data = a, center = "median")
-leveneTest(NKA ~ Condición*Fechas, data = a, center = "median")
-```
-
-
-Normalidad para datos productivos
-
-```{r}
-normalidad_peso <- lm(Peso ~ Condición*Fechas, data = a)
-shapiro.test(normalidad_peso$residuals)
-qqPlot(normalidad_peso)
-normalidad_largo <- lm(Largo ~ Condición*Fechas, data = a)
-shapiro.test(normalidad_largo$residuals)
-qqPlot(normalidad_largo)
-normalidad_k <- lm(K ~ Condición*Fechas, data = a)
-shapiro.test(normalidad_k$residuals)
-qqPlot(normalidad_k)
-normalidad_nka <- lm(NKA ~ Condición*Fechas, data = a)
-shapiro.test(normalidad_nka$residuals)
-qqPlot(normalidad_nka)
-```
-
-
-Homocedasticidad para datos plasmáticos
-
-```{r}
-leveneTest(Glucosa ~ Condicion*Fechas, data = b, center = "median")
-leveneTest(Calcio ~ Condicion*Fechas, data = b, center = "median")
-leveneTest(Cloro ~ Condicion*Fechas, data = b, center = "median")
-leveneTest(Albumina ~ Condicion*Fechas, data = b, center = "median")
-leveneTest(Cortisol ~ Condicion*Fechas, data = b, center = "median")
-```
-
-
-
-Normalidad para datos plasmáticos
-
-```{r}
-normalidad_glucosa <- lm(Glucosa ~ Condicion*Fechas, data = b)
-shapiro.test(normalidad_glucosa$residuals)
-qqPlot(normalidad_glucosa)
-normalidad_calcio <- lm(Calcio ~ Condicion*Fechas, data = b)
-shapiro.test(normalidad_calcio$residuals)
-qqPlot(normalidad_calcio)
-normalidad_cloro <- lm(Cloro ~ Condicion*Fechas, data = b)
-shapiro.test(normalidad_cloro$residuals)
-qqPlot(normalidad_cloro)
-normalidad_albumina <- lm(Albumina ~ Condicion*Fechas, data = b)
-shapiro.test(normalidad_albumina$residuals)
-qqPlot(normalidad_albumina)
-normalidad_cortisol <- lm(Cortisol ~ Condicion*Fechas, data = b)
-shapiro.test(normalidad_cortisol$residuals)
-qqPlot(normalidad_cortisol)
-```
-
 
 Efecto de la IA sobre el Peso
 
@@ -300,6 +238,7 @@ anovapeso <- aov(Peso ~ Condición + Fechas + Condición:Fechas, data = a)
 anova(anovapeso)
 TukeyHSD(anovapeso)
 ```
+
 
 Efecto de la IA sobre el largo
 
@@ -380,6 +319,67 @@ anova(anovacortisol)
 TukeyHSD(anovacortisol)
 ```
 
+
+Supuestos estadísticos
+
+Homocedasticidad para datos productivos
+
+```{r}
+leveneTest(Peso ~ Condición*Fechas, data = a, center = "median")
+leveneTest(Largo ~ Condición*Fechas, data = a, center = "median")
+leveneTest(K ~ Condición*Fechas, data = a, center = "median")
+leveneTest(NKA ~ Condición*Fechas, data = a2, center = "median")
+```
+
+
+Normalidad para datos productivos
+
+```{r}
+normalidad_peso <- lm(Peso ~ Condición*Fechas, data = a)
+shapiro.test(normalidad_peso$residuals)
+qqPlot(normalidad_peso)
+normalidad_largo <- lm(Largo ~ Condición*Fechas, data = a)
+shapiro.test(normalidad_largo$residuals)
+qqPlot(normalidad_largo)
+normalidad_k <- lm(K ~ Condición*Fechas, data = a)
+shapiro.test(normalidad_k$residuals)
+qqPlot(normalidad_k)
+normalidad_nka <- lm(NKA ~ Condición*Fechas, data = a2)
+shapiro.test(normalidad_nka$residuals)
+qqPlot(normalidad_nka)
+```
+
+
+Homocedasticidad para datos plasmáticos
+
+```{r}
+leveneTest(Glucosa ~ Condicion*Fechas, data = b, center = "median")
+leveneTest(Calcio ~ Condicion*Fechas, data = b, center = "median")
+leveneTest(Cloro ~ Condicion*Fechas, data = b, center = "median")
+leveneTest(Albumina ~ Condicion*Fechas, data = b, center = "median")
+leveneTest(Cortisol ~ Condicion*Fechas, data = b, center = "median")
+```
+
+
+Normalidad para datos plasmáticos
+
+```{r}
+normalidad_glucosa <- lm(Glucosa ~ Condicion*Fechas, data = b)
+shapiro.test(normalidad_glucosa$residuals)
+qqPlot(normalidad_glucosa)
+normalidad_calcio <- lm(Calcio ~ Condicion*Fechas, data = b)
+shapiro.test(normalidad_calcio$residuals)
+qqPlot(normalidad_calcio)
+normalidad_cloro <- lm(Cloro ~ Condicion*Fechas, data = b)
+shapiro.test(normalidad_cloro$residuals)
+qqPlot(normalidad_cloro)
+normalidad_albumina <- lm(Albumina ~ Condicion*Fechas, data = b)
+shapiro.test(normalidad_albumina$residuals)
+qqPlot(normalidad_albumina)
+normalidad_cortisol <- lm(Cortisol ~ Condicion*Fechas, data = b)
+shapiro.test(normalidad_cortisol$residuals)
+qqPlot(normalidad_cortisol)
+```
 
 
 __Interpretación de resultados y conclusión__
