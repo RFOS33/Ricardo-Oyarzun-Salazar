@@ -31,22 +31,46 @@ library(ggannotate)
 
 
 __Planteamiento del problema a resolver (4 puntos).__
-La inteligencia artificial (IA) cada vez esta abarcando más areas que ayudan al bienestar de las personas. En este contexto, las industrias acuícolas están comenzando a utilizar esta tecnología pero aún su uso es muy incipiente y no se sabe con certeza si la IA puede de manera efectiva mejorar los parámetros productivos de peces en cultivo y ser una tecnología viable en el futuro. Debido a esta problemática se ha decidido realizar un experimento utilizando IA en el fotoperiodo de la especie Salmón del Atlantico Salmo salar mantenidos en agua dulce y agua de mar con el objetivo de evaluar si la IA mejora o modifica algunos parámetros productivos de la acuicultura de Salmo salar y si existen diferencias con respecto a su fisiología en comparación al sistema tradicionl de cultivo (luces sin inteligencia artificial).
+La inteligencia artificial (IA) cada vez esta abarcando más areas que ayudan al bienestar de las personas. En este contexto, las industrias acuícolas están comenzando a utilizar esta tecnología pero aún su uso es muy incipiente y no se sabe con certeza si la IA puede de manera efectiva mejorar los parámetros productivos de peces en cultivo y ser una tecnología viable en el futuro en un contexto costos beneficios. Debido a esta problemática se ha decidido realizar un experimento utilizando IA en el fotoperiodo de la especie Salmón del Atlantico Salmo salar mantenidos en agua dulce y agua de mar con el objetivo de evaluar si la IA mejora o modifica algunos parámetros productivos de la acuicultura de Salmo salar y si existen diferencias con respecto a su fisiología en comparación al sistema tradicionl de cultivo (luces sin inteligencia artificial).
 
 __Descripción detallada de los datos originales (4 puntos).__
 Se tomaron datos productivos de peso, largo, factor de condición (K) y parámetros fisiológicos de actividad enzimática de ATPAsas branquial (NKA), niveles de glucosa, calcio, cloro, albúmina y cortisol. Todas las variables mencionadas corresponden a variables respuestas, mientras que las variables predictoras o factores fueron condición (con IA y sin IA) y el factor tiempo que tiene alrededor de 18 niveles (18 fechas de muestreo) para las variables respuesta peso, largo y factor de condición, mientras que las demás variables respuestas (NKA, glucosa, calcio, cloro, albúmina, cortisol) tienen 15 niveles (15 fechas de muestreo). Todas las variables respuestas son variables cuantitativas continuas. De la fecha inicial (24-09-2020) hasta la fecha 12-02-2021 los peces fueron mantenidos en agua dulce, mientras que desde las fechas 26-02-2021 hasta el 25-05-2021 los peces fueron mantenidos en agua de mar. Una flecha en las gáficas indica cuando los peces fueron trasladados al agua de mar.  
 
+Resumen de los datos productivos
+
+```{r}
+resumen_datosa <- summary(a)
+pander::pander(resumen_datosa, caption = "Resumen parámetros productivos")
+```
+
+
+
+Resumen de la actividad enzimática NKA
+
+```{r}
+resumen_datosa2 <- summary(a2)
+pander::pander(resumen_datosa2, caption = "Resumen actividad enzimática NKA branquial")
+```
+
+
+Resumen de la actividad enzimática NKA
+
+```{r}
+resumen_datosb <- summary(b)
+pander::pander(resumen_datosb, caption = "Resumen parámetros plasmáticos")
+```
+
+
 
 __Análisis exploratorio de los datos__
 
-Importación de datos productivos
+Importación de datos productivos y ATPasa
 
 ```{r}
 a <- read_excel("datos_productivos_luxmeter.xlsx")
 a$Fechas <- as.factor(a$Fechas)
 a$Condición <- as.factor(a$Condición)
 str(a)
-summary(a)
 a2 <- read_excel("nka_luxmeter.xlsx")
 a2$Fechas <- as.factor(a2$Fechas)
 a2$Condición <- as.factor(a2$Condición)
@@ -64,7 +88,6 @@ b$Fechas <- as.factor(b$Fechas)
 b$Condicion <- as.factor(b$Condicion)
 b$Cortisol <- as.numeric(b$Cortisol)
 str(b)
-summary(b)
 ```
 
 
@@ -361,7 +384,7 @@ TukeyHSD(anovacortisol)
 
 __Interpretación de resultados y conclusión__
 
-Para evaluar si la IA genera un efecto en la fisiología de los peces se realizo un ANOVA de dos vías con interacción, donde las variables condición y fecha serán las variables predictoras y para el análisis se ocupo el paquete estadístico WRS2, el cual realiza analisis estadísticos robustos cuando no se pueden cumplir los supuestos de homocedasticidad y es robusto a la presencia de outlier. Al realizar la visualización de los dato se puede apreciar el incremento en la varianza de los datos, sugiriendo heterocedasticidad, lo cual fue confirmado con los test de levene (p < 0.05), por lo tanto realizamos anova de dos vías utilizando el paquete WRS2 y además realizamos el anova de dos vías tradicional para ir comparando ambas pruebas estadísticas. Para nuestra sorpresa el anova tradicional a pesar de no cumplir los supuestos, de todas formas fue capaz de detectar efectos significativos de los factores predictivos e incluso fue mucho más sensible en identificar diferencias significativas 
+Para evaluar si la IA genera un efecto en la fisiología de los peces se realizo un ANOVA de dos vías con interacción, donde las variables condición y fecha serán las variables predictoras y para el análisis se ocupo el paquete estadístico WRS2, el cual realiza analisis estadísticos robustos cuando no se pueden cumplir los supuestos de homocedasticidad y es robusto a la presencia de outlier. Al realizar la visualización de los dato se puede apreciar el incremento en la varianza de los datos, sugiriendo heterocedasticidad, lo cual fue confirmado con los test de levene (p < 0.05), por lo tanto realizamos anova de dos vías utilizando el paquete WRS2 y además realizamos el anova de dos vías tradicional para ir comparando ambas pruebas estadísticas. Para nuestra sorpresa el anova tradicional a pesar de existir heterocedasticidad en los datos, de todas formas fue capaz de detectar efectos significativos de los factores predictivos e incluso fue mucho más sensible en identificar diferencias significativas que utilizando el paquete WRS2. En ambos modelos se puede apreciar que la IA afecta la fisiología de los peces y este efecto es más evidente en condiciones de agua de mar que en agua dulce, ya que observa un incremento del peso y el largo en los últimos muestreos y el test a posteriori logra detectar diferencias significativas de la condición control con los peces mantenidos en la IA en los últimos 4 muestreos. Los niveles de Cortisol se reducen significativamente en los últimos muestreos, sugiriendo una reducción del estrés en los peces, además los niveles de Calcio disminuyen significativamente sugiriendo que los peces están captando el ion Calcio y utilizandolo para aumentar el crecimiento del tejido oseo. Se detectaron varias correlaciones significativas, con los niveles más altos en las variables Largo y Peso (0.95) lo cual es plausible, mientras que los niveles de Calcio y albúmina también presentaron un alto nivel de correlación (0.68) lo cual es lógico ya que se ha descrito que la proteína albúmina moviliza ion calcio, sugiriendo procesos que afectan el proceso de crecimiento en peces. En conclusión, la IA mejora el crecimiento de los peces, especialmente en agua de mar y además modifica la fisiología de los peces, mejorando procesos fisiológicos asociados al crecimiento. Muchos más estudios son necesarios que permitan detallar si los efectos de la IA son específicos y de corto plazo de cada salinidad o si es un efecto acumulativo donde la IA es necesaría en agua dulce para generar los efectos en agua de mar.    
 
 
 
