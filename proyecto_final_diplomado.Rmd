@@ -3,8 +3,10 @@ title: "Proyecto de fin de Diplomado"
 author: "Ricardo Oyarzun Salazar"
 date: "22/7/2021"
 output:
-  pdf_document: default
+  html_document:
+    df_print: paged
   word_document: default
+  pdf_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -45,6 +47,10 @@ a$Fechas <- as.factor(a$Fechas)
 a$Condición <- as.factor(a$Condición)
 str(a)
 summary(a)
+a2 <- read_excel("nka_luxmeter.xlsx")
+a2$Fechas <- as.factor(a2$Fechas)
+a2$Condición <- as.factor(a2$Condición)
+str(a2)
 ```
 
 
@@ -118,10 +124,10 @@ geompoint_K
 NKA
 
 ```{r}
-boxplot_NKA <- ggplot(a, aes(x = Fechas, y = NKA, color = Condición)) + geom_boxplot() + labs( x = "Fechas de muestreo", y = "Actividad enzimática NKA (umoles ADP/mg proteina/hora)") + theme(axis.text.x = element_text(angle = 20), legend.position = c(0.1,0.8)) + stat_summary(fun = mean, shape = 22, position = position_dodge(width = 0.75)) + geom_text(data = data.frame(x = 11.4772042897979, y = 16.5883528852713, label = "↓"), mapping = aes(x = x, y = y, label = label), size = 10.58, inherit.aes = FALSE)
+boxplot_NKA <- ggplot(a2, aes(x = Fechas, y = NKA, color = Condición)) + geom_boxplot() + labs( x = "Fechas de muestreo", y = "Actividad enzimática NKA (umoles ADP/mg proteina/hora)") + theme(axis.text.x = element_text(angle = 20), legend.position = c(0.1,0.8)) + stat_summary(fun = mean, shape = 22, position = position_dodge(width = 0.75)) + geom_text(data = data.frame(x = 11.4772042897979, y = 16.5883528852713, label = "↓"), mapping = aes(x = x, y = y, label = label), size = 10.58, inherit.aes = FALSE)
 boxplot_NKA
 
-geompoint_NKA <- ggplot(a, aes(x = Fechas, y = NKA, color = Condición)) + geom_point(position = position_jitterdodge(jitter.width = 0.3, dodge.width = 0.3)) + labs( x = "Fechas de muestreo", y = "Actividad enzimática NKA (umoles ADP/mg proteina/hora)") + theme(axis.text.x = element_text(angle = 20), legend.position = c(0.1,0.8)) + geom_text(data = data.frame(x = 11.5011689323912, y = 17.2186957365544, label = "↓"), mapping = aes(x = x, y = y, label = label), size = 10.58, inherit.aes = FALSE)
+geompoint_NKA <- ggplot(a2, aes(x = Fechas, y = NKA, color = Condición)) + geom_point(position = position_jitterdodge(jitter.width = 0.3, dodge.width = 0.3)) + labs( x = "Fechas de muestreo", y = "Actividad enzimática NKA (umoles ADP/mg proteina/hora)") + theme(axis.text.x = element_text(angle = 20), legend.position = c(0.1,0.8)) + geom_text(data = data.frame(x = 11.5011689323912, y = 17.2186957365544, label = "↓"), mapping = aes(x = x, y = y, label = label), size = 10.58, inherit.aes = FALSE)
 geompoint_NKA
 ```
 
@@ -200,19 +206,82 @@ pairs.panels(c[3:11], stars = TRUE, main = "Grafica de correlaciones parámetros
 
 __Análisis estadístico de los datos__
 
-Peso
+Supuestos estadísticos
+
+Homocedasticidad para datos productivos
 
 ```{r}
-t2way(Peso ~ Condición * Fechas, data = a)
-
-#anovaglucosa <- aov(Glucosa ~ Condicion * Fechas, data = a)
-#TukeyHSD(anovaglucosa)
-#anova(anovaglucosa)
-#mcp2a(Glucosa ~ Condicion * Fechas, data = a, est = "median")
+leveneTest(Peso ~ Condición*Fechas, data = a, center = "median")
+leveneTest(Largo ~ Condición*Fechas, data = a, center = "median")
+leveneTest(K ~ Condición*Fechas, data = a, center = "median")
+leveneTest(NKA ~ Condición*Fechas, data = a, center = "median")
 ```
 
 
-Peso
+Normalidad para datos productivos
+
+```{r}
+normalidad_peso <- lm(Peso ~ Condición*Fechas, data = a)
+shapiro.test(normalidad_peso$residuals)
+qqPlot(normalidad_peso)
+normalidad_largo <- lm(Largo ~ Condición*Fechas, data = a)
+shapiro.test(normalidad_largo$residuals)
+qqPlot(normalidad_largo)
+normalidad_k <- lm(K ~ Condición*Fechas, data = a)
+shapiro.test(normalidad_k$residuals)
+qqPlot(normalidad_k)
+normalidad_nka <- lm(NKA ~ Condición*Fechas, data = a)
+shapiro.test(normalidad_nka$residuals)
+qqPlot(normalidad_nka)
+```
+
+
+Homocedasticidad para datos plasmáticos
+
+```{r}
+leveneTest(Glucosa ~ Condicion*Fechas, data = b, center = "median")
+leveneTest(Calcio ~ Condicion*Fechas, data = b, center = "median")
+leveneTest(Cloro ~ Condicion*Fechas, data = b, center = "median")
+leveneTest(Albumina ~ Condicion*Fechas, data = b, center = "median")
+leveneTest(Cortisol ~ Condicion*Fechas, data = b, center = "median")
+```
+
+
+
+Normalidad para datos plasmáticos
+
+```{r}
+normalidad_glucosa <- lm(Glucosa ~ Condicion*Fechas, data = b)
+shapiro.test(normalidad_glucosa$residuals)
+qqPlot(normalidad_glucosa)
+normalidad_calcio <- lm(Calcio ~ Condicion*Fechas, data = b)
+shapiro.test(normalidad_calcio$residuals)
+qqPlot(normalidad_calcio)
+normalidad_cloro <- lm(Cloro ~ Condicion*Fechas, data = b)
+shapiro.test(normalidad_cloro$residuals)
+qqPlot(normalidad_cloro)
+normalidad_albumina <- lm(Albumina ~ Condicion*Fechas, data = b)
+shapiro.test(normalidad_albumina$residuals)
+qqPlot(normalidad_albumina)
+normalidad_cortisol <- lm(Cortisol ~ Condicion*Fechas, data = b)
+shapiro.test(normalidad_cortisol$residuals)
+qqPlot(normalidad_cortisol)
+```
+
+
+Efecto de la IA sobre el Peso
+
+```{r}
+t2way(Peso ~ Condición + Fechas + Condición:Fechas, data = a,)
+mcp2a(Peso ~ Condición + Fechas + Condición:Fechas, data = a, est = "median")
+
+anovapeso <- aov(Peso ~ Condición + Fechas + Condición:Fechas, data = a)
+anova(anovapeso)
+TukeyHSD(anovapeso)
+
+```
+
+largo
 
 ```{r}
 
@@ -226,7 +295,7 @@ Peso
 
 __Interpretación de resultados y conclusión__
 
-Para evaluar si la IA genera un efecto en la fisiología de los peces se realizo un ANOVA de dos vías con interacción, donde las variables condición y fecha serán las variables predictoras y para el análisis se ocupo el paquete estadístico WRS2, el cual realiza analisis estadísticos robustos cuando no se pueden cumplir los supuestos de homocedasticidad y normalidad de los datos.
+Para evaluar si la IA genera un efecto en la fisiología de los peces se realizo un ANOVA de dos vías con interacción, donde las variables condición y fecha serán las variables predictoras y para el análisis se ocupo el paquete estadístico WRS2, el cual realiza analisis estadísticos robustos cuando no se pueden cumplir los supuestos de homocedasticidad y normalidad de los datos. Al evaluar 
 
 
 
