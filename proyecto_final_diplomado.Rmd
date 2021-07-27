@@ -3,10 +3,10 @@ title: "Proyecto de fin de Diplomado"
 author: "Ricardo Oyarzun Salazar"
 date: "22/7/2021"
 output:
-  word_document: default
-  pdf_document: default
   html_document:
     df_print: paged
+  pdf_document: default
+  word_document: default
 ---
 
 ```{r setup, include=FALSE}
