@@ -1,10 +1,10 @@
 ## Título: Proyecto de fin de Diplomado 
 ## Autor: Ricardo Oyarzun-Salazar 
 
-__Planteamiento del problema a resolver (4 puntos).__
+__Planteamiento del problema a resolver.__
 La inteligencia artificial (IA) cada vez esta abarcando más areas que ayudan al bienestar de las personas. En este contexto, las industrias acuícolas están comenzando a utilizar esta tecnología pero aún su uso es muy incipiente y no se sabe con certeza si la IA puede de manera efectiva mejorar los parámetros productivos de peces en cultivo y ser una tecnología viable en el futuro en un contexto de costos y beneficios. Debido a esta problemática se ha decidido realizar un experimento utilizando IA en el fotoperiodo de la especie Salmón del Atlantico *Salmo salar* mantenidos en agua dulce y agua de mar con el objetivo de evaluar si la IA mejora o modifica algunos parámetros productivos de la acuicultura de *Salmo salar* y si existen diferencias con respecto a su fisiología en comparación al sistema tradicionl de cultivo (luces sin inteligencia artificial).
 
-__Descripción detallada de los datos originales (4 puntos).__
+__Descripción detallada de los datos originales.__
 Se tomaron datos productivos de peso, largo, factor de condición (K) y parámetros fisiológicos de actividad enzimática de ATPAsas branquial (NKA), niveles de glucosa, calcio, cloro, albúmina y cortisol en la especie *Salmo salar*. Todas las variables mencionadas corresponden a variables respuestas, mientras que las variables predictoras o factores fueron condición (con IA y sin IA) y el factor tiempo que tiene alrededor de 18 niveles (18 fechas de muestreo) para las variables respuesta peso, largo y factor de condición, mientras que las demás variables respuestas (NKA, glucosa, calcio, cloro, albúmina, cortisol) tienen 15 niveles (15 fechas de muestreo). Todas las variables respuestas son variables cuantitativas continuas. De la fecha inicial (05-10-2020) hasta la fecha 10-02-2021 los peces fueron mantenidos en agua dulce, mientras que desde las fechas 26-02-2021 hasta el 25-05-2021 los peces fueron mantenidos en agua de mar. Una flecha en las gráficas indica cuando los peces fueron trasladados al agua de mar.  
 
 library(tidyverse)
